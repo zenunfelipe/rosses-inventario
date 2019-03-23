@@ -230,6 +230,9 @@ angular.module('andes.controllers', [])
   $scope.borrarPareja = function (IdArticulo, CodigoBarra) {
     $rootScope.confirmar('Seguro?', function() {
       $rootScope.showload();
+      if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+
+
       jQuery.post(app.rest+"/index.php?action=eliminar", { 
         andes: $scope.barra,
         ean: CodigoBarra
@@ -246,7 +249,6 @@ angular.module('andes.controllers', [])
         }
       },"json").fail(function() {
         $rootScope.hideload();
-        if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
         $rootScope.err("Error de servidor");
       });
     });
@@ -301,12 +303,14 @@ angular.module('andes.controllers', [])
 
       else if ($scope.modoEscaner == 'agregar') {
         $scope.modoEscaner = 'leer';
+
         $scope.popCloseable.close();
         $rootScope.showload();
         jQuery.post(app.rest+"/index.php?action=asociar", { 
           andes: $scope.barra,
           ean: args.data.data
         }, function(data) {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
           $rootScope.hideload();
           $scope.pareja.push({
             CodigoBarra: args.data.data
