@@ -24,7 +24,12 @@ angular.module('andes.controllers', [])
   });
 
   $scope.$on('$ionicView.beforeLeave', function(obj, viewData){
-
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+    $scope.info = [];
   }); 
 
   $scope.agregarEmparejado  = function() {
@@ -217,7 +222,12 @@ angular.module('andes.controllers', [])
   });
 
   $scope.$on('$ionicView.beforeLeave', function(obj, viewData){
-
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+    $scope.info = [];
   }); 
 
   $scope.agregarEmparejado  = function() {
@@ -355,6 +365,7 @@ angular.module('andes.controllers', [])
     $scope.pareja = [];
     $scope.info = {};
   }); 
+
   $scope.cancelar = function() {
     $scope.popCloseable = null;
     $scope.barra = '';
@@ -438,7 +449,7 @@ angular.module('andes.controllers', [])
       else if ($scope.modoEscaner == 'agregar') {
         if (args.data.data.length == 18) {
           $rootScope.showload();
-          jQuery.post(app.rest+"/mayor.php?op=reubicarCodigo", { 
+          jQuery.post(app.rest+"/mayor.php?op=reubicarValidando", { 
             ubica: $scope.barra,
             barra: args.data.data
           }, function(data) {
