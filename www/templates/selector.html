@@ -1,0 +1,27 @@
+<ion-view view-title="SELECCIONA BODEGA Y TIPO LECTURA">
+  <ion-content class="home" on-swipe-right="onSwipeRight($event)" on-swipe-left="onSwipeLeft($event)">
+
+    <div class="text-center">
+    <br /><br />
+    <h3>BODEGA VENTAS</h3>
+    <button class="button button-picking button-assertive icon ion-pricetag" ng-click="BVN()"> POR PRODUCTO</button>
+    <br /><br />
+    <h3>BODEGA MAYOR</h3>
+    <button class="button button-picking button-royal icon ion-pricetag" ng-click="BPM()"> POR PRODUCTO</button>
+    <br /><br />
+    <button class="button button-picking button-positive icon ion-android-locate" ng-click="BPMUbicacion()"> POR UBICACION</button>
+    <br /><br />
+
+
+    </div>
+
+  </ion-content>
+  <ion-footer-bar class="bar-stable">
+    <div class="row">
+      <div class="col col-100 text-center">
+        <strong>SELECCIONA UNA BODEGA Y TIPO LECTURA</strong>
+      </div>
+    </div>
+    
+  </ion-footer-bar>
+</ion-view>
