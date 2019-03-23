@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.andes.mayor" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>Mayor</name>
+  <name>Andes Inventarios</name>
   <description>
-      Mayor
+      Andes Inventarios
     </description>
   <author email="rosses@andesindustrial.cl" href="http://www.andesindustrial.cl/">
       
@@ -69,13 +69,14 @@
   <plugin name="cordova-plugin-statusbar" />
   <plugin name="cordova-custom-config" spec="1.2.6"/>
   <plugin name="cordova-plugin-dialogs" spec="1.2.1"/>
+  <!--
   <plugin name="phonegap-plugin-barcodescanner">
     <param name="CAMERA_USAGE_DESCRIPTION" value="Lector Andes"/>
   </plugin>
   <plugin name="cordova-plugin-bluetooth-serial">
     <param name="BLUETOOTH_USAGE_DESCRIPTION" value="Impresoras Andes"/>
   </plugin>
-
+  -->
   <icon src="icon.png" />
   <splash src="splash.png" />
 </widget>

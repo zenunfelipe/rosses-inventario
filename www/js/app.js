@@ -1,10 +1,7 @@
 app = {
   rest:  "http://186.67.74.115:8085/bodega"
 };
-var printers = [];
-var popupwifi = null;
-var popupqty = null;
-var WifiWizard2 = null;
+
 angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-custom-keyboard'])
 
 .run(function($ionicPlatform, $rootScope, $ionicHistory, $timeout, $state, $localStorage, $ionicPopup, $ionicLoading) {
@@ -16,6 +13,7 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
       cordova.plugins.Keyboard.disableScroll(true);
     }
     if (window.cordova) {
+      console.log('Welcome cordova');
       window.cordova.plugins.honeywell.selectDevice('dcs.scanner.imager', () => {
         console.info('dcs.scanner.imager codebar device connected');
         window.cordova.plugins.honeywell.claim(() => { 
@@ -55,39 +53,9 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
     $ionicLoading.hide().then(function(){
     });
   };
-
-
-  if (!$localStorage.app) { $localStorage.app = app;  }
-  if ($localStorage.sacador) { $rootScope.sacador = $localStorage.sacador; }
-
-  $rootScope.readmode = 0;
-  $rootScope.notificaciones = 0; 
-  $rootScope.viendoDetalle = 0; 
+ 
   $state.go("main.selector");
-
-  $rootScope.nowifi = function() { 
-    popupwifi = $ionicPopup.alert({
-     title: "SIN RED DISPONIBLE",
-     template: "INTENTANDO CONECTAR WIFI",
-     buttons: {
-      text: '<b>OK</b>',
-      type: 'button-positive',
-      onTap: function(e) { e.preventDefault(); }
-     }
-    });
-
-  }
-
-  $rootScope.siwifi = function() { 
-    var event = new CustomEvent("online", { "detail": "Example" });
-    document.dispatchEvent(event);
-    try {
-      if (typeof popupwifi.close === 'function') { popupwifi.close(); }
-    } 
-    catch(err) {
-
-    }
-  }
+ 
 
   $rootScope.err = function(msg, cb) {
      var alertPopup = $ionicPopup.alert({
@@ -165,75 +133,7 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
       return returntext.trim();
   }
 
-  $rootScope.cerrarSession = function() {
-    $rootScope.confirmar('Vas a salir de tu cuenta', function() {
-      $localStorage.$reset();
-
-      $ionicHistory.nextViewOptions({
-        disableBack: true,
-        historyRoot: true
-      });
-      $state.go("login");
-    });
-  };
-
-  $rootScope.wifiread = function() {
-    if (WifiWizard2) {
-       console.log("WifiWizard2 starting");
-       WifiWizard2.scan().then(function(networks) {
-        var connectTo = "";
-        var enables = ["danilo"];
-        for (var i=0;i<networks.length;i++) {
-          if (networks[i].frequency < 3000 && networks[i].level >= -67 && enables.indexOf(networks[i].SSID) > -1) {
-            connectTo = networks[i].SSID;
-            break;
-          }
-        }
-        console.log('ConnectTo Result: '+connectTo);
-        if (connectTo != "") {
-          var x = WifiWizard2.isConnectedToInternet();
-          x.then(function(z) {
-            if (z == "NOT_CONNECTED_TO_INTERNET") {
-              var y = WifiWizard2.connect(connectTo, true, "@ndesbodeg@", "WPA", false);
-              y.then(function() {
-                console.log("WifiWizard2 connected");
-                $rootScope.siwifi();
-              }, function() {
-                console.log("WifiWizard2.connect ("+connectTo+") fail - wifiread again");
-                $rootScope.wifiread();
-              });
-            }
-            else {
-              console.log("WifiWizard2 != NOT_CONNECTED_TO_INTERNET ("+z+"), SiWifi is call!");
-              $rootScope.siwifi();
-            }
-          }, function() {
-            console.log("WifiWizard2 isConnectedToInternet fail - connecting to "+connectTo);
-              var y = WifiWizard2.connect(connectTo, true, "@ndesbodeg@", "WPA", false);
-              y.then(function() {
-                console.log("WifiWizard2 connected");
-                $rootScope.siwifi();
-              }, function() {
-                console.log("WifiWizard2.connect ("+connectTo+") fail - wifiread again");
-                $rootScope.wifiread();
-              });
-          });
-        }
-        else {
-          console.log("WifiWizard2 connect to nothing! - wifiread again");
-          $rootScope.wifiread();
-        }
-      }, function(x) {
-        console.log("WifiWizard2 no scan... wifiread again!");
-        $rootScope.wifiread();
-      });
-    } else {
-      console.log('Not ready WifiWizard2, triying in 5 seconds');
-      $timeout(function() {
-        $rootScope.wifiread();
-      }, 5000);
-    }
-  }
+ 
 })
 
 .config(function($stateProvider, $urlRouterProvider,$ionicConfigProvider, $peanuthubCustomKeyboardProvider) {
