@@ -11,6 +11,7 @@ angular.module('andes.controllers', [])
   $scope.info = [];
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
+    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
     if (viewData.direction == 'back') {
 
     }
@@ -203,6 +204,7 @@ angular.module('andes.controllers', [])
   $scope.info = [];
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
+    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
     if (viewData.direction == 'back') {
 
     }
@@ -330,6 +332,7 @@ angular.module('andes.controllers', [])
   $scope.info = {};
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
+    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
     if (viewData.direction == 'back') {
       $scope.popCloseable = null;
       $scope.barra = '';
@@ -464,7 +467,7 @@ angular.module('andes.controllers', [])
 .controller('MainCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicSideMenuDelegate, $ionicHistory) {
 
   $ionicSideMenuDelegate.canDragContent(false);
-
+  if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
   $scope.inicio = function() {
     $ionicHistory.nextViewOptions({
         historyRoot: true
