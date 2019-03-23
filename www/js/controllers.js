@@ -120,6 +120,7 @@ angular.module('andes.controllers', [])
           });
 
         } else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
           $scope.err("CODIGO DE PRODUCTO O BULTO INVALIDO EN BODEGA MAYOR");
         }
       }
@@ -157,6 +158,7 @@ angular.module('andes.controllers', [])
             $ionicHistory.goBack();
           });
         } else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
           $rootScope.err("CODIGO INVALIDO PARA REUBICAR");
         }
       }
@@ -275,6 +277,7 @@ angular.module('andes.controllers', [])
 
         if (args.data.data.length != 14) {
           $rootScope.err("CODIGO LEIDO NO ES VALIDO");
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
         }
         else {
 
@@ -442,6 +445,7 @@ angular.module('andes.controllers', [])
           });
 
         } else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
           $scope.err("CODIGO DE UBICACION INVALIDO EN BODEGA MAYOR");
         }
       }
@@ -471,6 +475,7 @@ angular.module('andes.controllers', [])
           });
         }
         else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
           $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
         }
       }
