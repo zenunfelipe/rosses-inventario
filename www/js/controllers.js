@@ -377,12 +377,12 @@ angular.module('andes.controllers', [])
     $scope.pareja = [];
     $scope.info = {};
   }
-  $scope.borrarPareja = function (IdArticulo, CodigoBarra) {
-    $rootScope.confirmar('Seguro?', function() {
+  $scope.borrar = function (IdArticulo) {
+    $rootScope.confirmar('Desea limpiar la ubicación del articulo '+IdArticulo+'?', function() {
       $rootScope.showload();
-      jQuery.post(app.rest+"/mayor.php?op=borrarEmparejado", { 
+      jQuery.post(app.rest+"/mayor.php?op=borrarUbicacion", { 
         barra: $scope.barra, 
-        borrar: CodigoBarra, 
+        borrar: IdArticulo, 
       }, function(data) {
         $rootScope.hideload();
         if (data.res == "ERR") {
@@ -393,11 +393,11 @@ angular.module('andes.controllers', [])
         }
         else {
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-          $scope.info = data.data.InfoBPMArticulo;
-          if (data.data.hasOwnProperty("CodigosEmparejados")) {
-            $scope.pareja = data.data.CodigosEmparejados;  
-          } else {
-            $scope.pareja = [];
+          for (var i =0;i < $scope.pareja.length; i++) {
+            if ($scope.pareja[i].IDArticulo == IdArticulo) {
+              $scope.splice(i, 1);
+              break;
+            }
           }
         }
       },"json").fail(function() {
@@ -408,6 +408,8 @@ angular.module('andes.controllers', [])
       });
     });
   };
+
+
 
   $scope.$on('scanner', function(event, args) {
     
@@ -458,8 +460,28 @@ angular.module('andes.controllers', [])
             barra: args.data.data
           }, function(data) {
             $rootScope.hideload();
-            if (data.res == "ERR") {
+            if (data.res == "PROMPT") {
               if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.confirmar(data.msg, function() {
+                $rootScope.showload();
+                jQuery.post(app.rest+"/mayor.php?op=reubicarValidando", { 
+                  ubica: $scope.barra,
+                  barra: args.data.data,
+                  secure: '1'
+                }, function(data2) {
+                  $rootScope.hideload();
+                  $scope.pareja = data2.pareja;
+                },"json").fail(function() {
+                  $rootScope.hideload();
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                  $rootScope.err("Error de servidor");
+                });
+
+              }, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else if (data.res == "ERR") {
               $rootScope.err(data.msg, function() {
                 if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
               });

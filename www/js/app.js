@@ -210,7 +210,35 @@ function() { // should be altered to suit your needs
       var ret=(input)?input.toString().trim().replace(",",".").toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."):0;
       return ("$ "+ret);
     };
-}]);
+}])
+.directive('onDoubleClick', function($timeout) {
+    return {
+        restrict: 'A',
+        link: function($scope, $elm, $attrs) {
+
+            var clicks = 0;
+
+            $elm.bind('click', function(evt) {
+               
+                clicks++;
+                if (clicks == 1) {
+                    $timeout(function() {
+                        if (clicks == 1) {
+                            //....
+                        } else {
+                            $scope.$apply(function() {
+                               
+                                $scope.$eval($attrs.onDoubleClick);
+                            });
+                        }
+                        clicks = 0;
+                    }, 300);
+                }
+            });
+
+        }
+    };
+});
 
 
 document.addEventListener("offline", function() {
