@@ -324,10 +324,38 @@ angular.module('andes.controllers', [])
           ean: args.data.data
         }, function(data) {
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+
+          jQuery.post(app.rest+"/index.php?action=sku", { 
+            codigo: $scope.barra
+          }, function(data) {
+            $rootScope.hideload();
+            console.log(data);
+            if (data.data2[0].msgResult == "ER") {
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.err(data.data2[0].msgError, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              $scope.barra = args.data.data;
+              $scope.enableOp = true;
+              $scope.info = data.data2;
+              $scope.pareja = data.pos;
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+            $ionicHistory.goBack();
+          });
+          /*
           $rootScope.hideload();
           $scope.pareja.push({
             CodigoBarra: args.data.data
           });
+          */
+
         },"json").fail(function() {
           $rootScope.hideload();
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
