@@ -499,6 +499,7 @@ angular.module('andes.controllers', [])
                 }, function(data2) {
                   $rootScope.hideload();
                   $scope.pareja = data2.pareja;
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
                 },"json").fail(function() {
                   $rootScope.hideload();
                   if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
