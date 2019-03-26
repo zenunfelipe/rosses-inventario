@@ -509,9 +509,6 @@ angular.module('andes.controllers', [])
 .controller('MainCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicSideMenuDelegate, $ionicHistory) {
 
   $ionicSideMenuDelegate.canDragContent(false);
-  setTimeout(function() {
-    if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
-  }, 2000);
 
   $scope.inicio = function() {
     $ionicHistory.nextViewOptions({
