@@ -201,6 +201,15 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
       }
     }
   })
+  .state('main.conteo', {
+    url: '/conteo',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/conteo.html',
+        controller: 'ConteoCtrl'
+      }
+    }
+  })
 
   //$urlRouterProvider.otherwise('/main/home');
 })
@@ -265,22 +274,17 @@ document.addEventListener("online", function() {
   $rootScope.$apply();
 }, false);
 
-function fakeScan() {
+function codigo() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
   $rootScope.$broadcast("scanner", { data: {success: true, data: "I00000000000200100" } });
   $rootScope.$apply();
 }
+/*
 function fakeScan2() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
   $rootScope.$broadcast("scanner", { data: {success: true, data: "I0000000s56013" } });
-  $rootScope.$apply();
-}
-function fakeScan3() {
-  var $body = angular.element(document.body);            // 1
-  var $rootScope = $body.injector().get('$rootScope');   // 2b
-  $rootScope.$broadcast("scanner", { data: {success: true, data: "NOR1000501" } });
   $rootScope.$apply();
 }
 
@@ -290,6 +294,14 @@ function fakeScan666() {
   $rootScope.$broadcast("scanner", { data: {success: true, data: "123" } });
   $rootScope.$apply();
 }
+*/
+function ubicacion() {
+  var $body = angular.element(document.body);            // 1
+  var $rootScope = $body.injector().get('$rootScope');   // 2b
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "NOR1000501" } });
+  $rootScope.$apply();
+}
+
 
 jQuery.ajaxSetup({
   type: 'POST',

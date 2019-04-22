@@ -535,6 +535,182 @@ angular.module('andes.controllers', [])
     }
   });
 })
+.controller('ConteoCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
+
+  $scope.popCloseable = null;
+  $scope.barra = '';
+  $scope.modoEscaner = 'leer';
+  $scope.enableOp = false;
+  $scope.pareja = [];
+  $scope.info = {};
+  $scope.conteo = 0;
+  $scope.custom_qty = 1;
+
+  $scope.$on('$ionicView.enter', function(obj, viewData){
+    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+    if (viewData.direction == 'back') {
+      $scope.popCloseable = null;
+      $scope.barra = '';
+      $scope.modoEscaner = 'leer';
+      $scope.enableOp = false;
+      $scope.pareja = [];
+      $scope.info = {};
+    }
+  });
+
+  $scope.$on('$ionicView.beforeLeave', function(obj, viewData){
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+    $scope.info = {};
+  }); 
+
+  $scope.cancelar = function() {
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+    $scope.info = {};
+  }
+  $scope.borrar = function (IdArticulo) {
+    $rootScope.confirmar('Desea limpiar la ubicación del articulo '+IdArticulo+'?', function() {
+      $rootScope.showload();
+      jQuery.post(app.rest+"/mayor.php?op=borrarUbicacion", { 
+        barra: $scope.barra, 
+        borrar: IdArticulo, 
+      }, function(data) {
+        $rootScope.hideload();
+        if (data.res == "ERR") {
+          if (window.cordova) { navigator.notification.beep(1); }
+          $rootScope.err(data.msg, function() {
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          });
+        }
+        else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          for (var i =0;i < $scope.pareja.length; i++) {
+            if ($scope.pareja[i].IDArticulo == IdArticulo) {
+              $scope.splice(i, 1);
+              break;
+            }
+          }
+        }
+      },"json").fail(function() {
+        $rootScope.hideload();
+        if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+        $rootScope.err("No es accesible");
+        $ionicHistory.goBack();
+      });
+    });
+  };
+
+
+
+  $scope.$on('scanner', function(event, args) {
+    
+    if (args.hasOwnProperty("data") && args.data.success == true) {
+
+      if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
+
+      if ($scope.modoEscaner == 'leer') {
+        if (args.data.data.length == 10) {
+          $rootScope.showload();
+          jQuery.post(app.rest+"/conteo.php?op=consultarUbicacion", { 
+            barra: args.data.data
+          }, function(data) {
+            $rootScope.hideload();
+            if (data.res == "ERR") {
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.err(data.msg, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              if (data.data.InfoUbicacion[0].CantidadConteo == 0) {
+                $scope.conteo = 1;
+              }
+
+              $scope.barra = args.data.data;
+              $scope.enableOp = true;
+              $scope.info = data.data;
+              $scope.modoEscaner = 'agregar';
+              //$scope.pareja = data.pareja;
+              
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+            $ionicHistory.goBack();
+          });
+
+        } else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $scope.err("CODIGO DE UBICACION INVALIDO EN BODEGA MAYOR");
+        }
+      }
+
+      else if ($scope.modoEscaner == 'agregar') {
+        if (args.data.data.length == 18) {
+          $rootScope.showload();
+          jQuery.post(app.rest+"/mayor.php?op=agregarConteo", { 
+            ubica: $scope.barra,
+            barra: args.data.data
+          }, function(data) {
+            $rootScope.hideload();
+            /*if (data.res == "PROMPT") {
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.confirmar(data.msg, function() {
+                $rootScope.showload();
+                jQuery.post(app.rest+"/mayor.php?op=reubicarValidando", { 
+                  ubica: $scope.barra,
+                  barra: args.data.data,
+                  secure: '1'
+                }, function(data2) {
+                  $rootScope.hideload();
+                  $scope.pareja = data2.pareja;
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                },"json").fail(function() {
+                  $rootScope.hideload();
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                  $rootScope.err("Error de servidor");
+                });
+
+              }, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else */
+            if (data.res == "ERR") {
+              $rootScope.err(data.msg, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              $scope.pareja = data.pareja;
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+          });
+        }
+        else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
+        }
+      }
+
+
+    }
+  });
+})
+
 .controller('MainCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicSideMenuDelegate, $ionicHistory) {
 
   $ionicSideMenuDelegate.canDragContent(false);
@@ -546,9 +722,7 @@ angular.module('andes.controllers', [])
     $state.go('main.selector');
     $ionicSideMenuDelegate.toggleLeft();
   }
-
 })
-
 .controller('SelectorCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicHistory) {
 
   $scope.BVN = function() {
@@ -565,15 +739,20 @@ angular.module('andes.controllers', [])
     $state.go('main.bpm');
   }
 
+  $scope.CONTEO = function() {
+    $ionicHistory.nextViewOptions({
+        historyRoot: true
+    });
+    $state.go('main.conteo');
+  }
+
   $scope.BPMUbicacion = function() {
     $ionicHistory.nextViewOptions({
         historyRoot: true
     });
     $state.go('main.bpmubicacion');
   }
-
 })
-
 String.prototype.toBytes = function() {
     var arr = []
     for (var i=0; i < this.length; i++) {
@@ -581,7 +760,6 @@ String.prototype.toBytes = function() {
     }
     return arr
 }
-
 function miles(nStr) {
     nStr += '';
     x = nStr.split('.');
