@@ -573,12 +573,13 @@ angular.module('andes.controllers', [])
     $scope.pareja = [];
     $scope.info = {};
   }
-  $scope.borrar = function (IdArticulo) {
-    $rootScope.confirmar('Desea reiniciar el conteo de '+IdArticulo+'?', function() {
+  $scope.borrar = function (IdArticulo,bulto) {
+    $rootScope.confirmar('Desea reiniciar el conteo del artículo código: '+IdArticulo+'?', function() {
       $rootScope.showload();
       jQuery.post(app.rest+"/conteo.php?op=rebootConteo", { 
-        barra: $scope.barra, 
-        borrar: IdArticulo, 
+        ubica: $scope.barra, 
+        barra: IdArticulo, 
+        bulto: bulto,
       }, function(data) {
         $rootScope.hideload();
         if (data.res == "ERR") {
