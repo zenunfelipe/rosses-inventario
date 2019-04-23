@@ -25,7 +25,7 @@
               <button ng-click="borrar(linea.IDArticulo, linea.Bulto)" style="height: 20px; line-height: 20px; min-width: 20px; width: 20px; min-height: 20px; text-align: center; padding: 0px;" class="button button-assertive">X</button> <span>{{linea.IDArticulo}}</span> {{linea.Descripcion}}
             </div>
             <div class="col-15 conteo-bulto">
-              {{(linea.Bulto == 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : linea.Bulto)}}
+              {{(linea.Bulto == 0 || linea.Cantidad == 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : linea.Bulto)}}
               <span ng-if="linea.Bulto > 0">und. x bulto</span>
 
             </div>
