@@ -630,6 +630,7 @@ angular.module('andes.controllers', [])
               //if (data.data.InfoUbicacion[0].CantidadConteo == 0) {
               //  $scope.conteo = 1;
               //}
+              $rootScope.custom_qty=1;
               $scope.conteo = data.data.InfoUbicacion[0].NroConteo;
               if ($scope.conteo == 3 && data.data.InfoUbicacion[0].IDEstadoConteo == 1) {
                 $scope.conteo = 0;
@@ -642,10 +643,19 @@ angular.module('andes.controllers', [])
                 $scope.info = data.data;
                 $scope.modoEscaner = 'agregar';
                 //$scope.pareja = data.pareja;
-
                 $scope.pareja = [];
                 for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
-                  if ($scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo] > 0) {
+                  //console.log('idarticulo: '+  $scope.info.ConteoInventario[i].IDArticulo + ' uni - '+$scope.info.ConteoInventario[i].UnidadxBulto+' - estado: '+$scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo]+" - conteo: "+$scope.conteo);
+                  if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0) {
+                    //console.log('IN OK');
+                    $scope.pareja.push({
+                      Descripcion: $scope.info.ConteoInventario[i].Nombre,
+                      IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
+                      Bulto: $scope.info.ConteoInventario[i].UnidadxBulto,
+                      Cantidad: $scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo]
+                    });
+                  }
+                  else if ($scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo] > 0 && $scope.conteo < 3) {
                     $scope.pareja.push({
                       Descripcion: $scope.info.ConteoInventario[i].Nombre,
                       IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
@@ -670,7 +680,7 @@ angular.module('andes.controllers', [])
       }
 
       else if ($scope.modoEscaner == 'agregar') {
-        if (args.data.data.length == 18) {
+        //if (args.data.data.length == 18) {
           $rootScope.showload();
           jQuery.post(app.rest+"/conteo.php?op=agregarConteo", { 
             ubica: $scope.barra,
@@ -678,41 +688,20 @@ angular.module('andes.controllers', [])
             conteo: $rootScope.custom_qty
           }, function(data) {
             $rootScope.hideload();
-            /*if (data.res == "PROMPT") {
-              if (window.cordova) { navigator.notification.beep(1); }
-              $rootScope.confirmar(data.msg, function() {
-                $rootScope.showload();
-                jQuery.post(app.rest+"/mayor.php?op=reubicarValidando", { 
-                  ubica: $scope.barra,
-                  barra: args.data.data,
-                  secure: '1'
-                }, function(data2) {
-                  $rootScope.hideload();
-                  $scope.pareja = data2.pareja;
-                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-                },"json").fail(function() {
-                  $rootScope.hideload();
-                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-                  $rootScope.err("Error de servidor");
-                });
-
-              }, function() {
-                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-              });
-            }
-            else */
             if (data.res == "ERR") {
               $rootScope.err(data.msg, function() {
                 if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
               });
             }
             else {
+              $rootScope.custom_qty=1;
               if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
               $scope.info = data.data;
               $scope.pareja = [];
               for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
-
-                if ($scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo] > 0) {
+                //console.log('idarticulo: '+  $scope.info.ConteoInventario[i].IDArticulo + ' uni - '+$scope.info.ConteoInventario[i].UnidadxBulto+' - estado: '+$scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo]+" - conteo: "+$scope.conteo);
+                if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0) {
+                  //console.log('IN OK');
                   $scope.pareja.push({
                     Descripcion: $scope.info.ConteoInventario[i].Nombre,
                     IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
@@ -720,8 +709,16 @@ angular.module('andes.controllers', [])
                     Cantidad: $scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo]
                   });
                 }
-                $scope.$broadcast('scroll.resize')
+                else if ($scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo] > 0 && $scope.conteo < 3) {
+                  $scope.pareja.push({
+                    Descripcion: $scope.info.ConteoInventario[i].Nombre,
+                    IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
+                    Bulto: $scope.info.ConteoInventario[i].UnidadxBulto,
+                    Cantidad: $scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo]
+                  });
+                }
               }
+              $scope.$broadcast('scroll.resize');
               
             }
           },"json").fail(function() {
@@ -729,11 +726,11 @@ angular.module('andes.controllers', [])
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
           });
-        }
-        else {
-          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-          $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
-        }
+        //}
+        //else {
+        //  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+        //  $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
+        //}
       }
     }
   });
@@ -752,6 +749,7 @@ angular.module('andes.controllers', [])
               historyRoot: true
           });
           $state.go('main.selector');
+          $rootScope.custom_qty=1;
         }
         else {
           $rootScope.err(data2.msg);
