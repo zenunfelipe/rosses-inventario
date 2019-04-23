@@ -590,7 +590,7 @@ angular.module('andes.controllers', [])
         }
         else {
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-
+          $scope.info = data.data;
           $scope.pareja = [];
           for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
             //console.log('idarticulo: '+  $scope.info.ConteoInventario[i].IDArticulo + ' uni - '+$scope.info.ConteoInventario[i].UnidadxBulto+' - estado: '+$scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo]+" - conteo: "+$scope.conteo);

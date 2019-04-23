@@ -279,7 +279,7 @@ document.addEventListener("online", function() {
 function codigo() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
-  $rootScope.$broadcast("scanner", { data: {success: true, data: "I00000000000200100" } });
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "I000000001431" } });
   $rootScope.$apply();
 }
 /*
