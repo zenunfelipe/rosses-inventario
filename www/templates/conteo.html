@@ -26,7 +26,7 @@
             </div>
             <div class="col-15 conteo-bulto">
               {{(linea.Bulto == 0 || linea.Cantidad == 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : linea.Bulto)}}
-              <span ng-if="linea.Bulto > 0">und. x bulto</span>
+              <span ng-if="linea.Bulto > 0 && linea.Cantidad > 0">und. x bulto</span>
 
             </div>
             <div class="col-15 conteo-qty">
