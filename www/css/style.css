@@ -292,3 +292,35 @@ ion-content.pedido {
 	margin-right: 20px;
 	width: 70px;
 }
+
+.conteo-articulo {
+	font-size: 16px;
+	line-height: 16px;
+	border-radius: 10px;
+	background-color: #f0fd77;
+	padding: 10px;
+}
+.conteo-articulo span {
+	font-weight: bold;
+}
+.conteo-qty {
+	padding: 10px;
+	font-size: 28px;	
+	font-weight: bold;
+	text-align: center;
+}
+.conteo-qty span {
+	display:block;
+	font-size: 11px;	
+}
+.conteo-bulto {
+	padding: 10px;
+	font-size: 23px;	
+	color: #FF0000;
+	font-weight: bold;
+	text-align: center;
+}
+.conteo-bulto span {
+	display:block;
+	font-size: 11px;
+}

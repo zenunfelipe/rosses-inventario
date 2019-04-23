@@ -71,7 +71,7 @@ angular.module('andes.controllers', [])
         $rootScope.hideload();
         if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
         $rootScope.err("No es accesible");
-        $ionicHistory.goBack();
+
       });
     });
   };
@@ -116,7 +116,6 @@ angular.module('andes.controllers', [])
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
-            $ionicHistory.goBack();
           });
 
         } else {
@@ -155,7 +154,7 @@ angular.module('andes.controllers', [])
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
-            $ionicHistory.goBack();
+
           });
         } else {
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
@@ -307,7 +306,7 @@ angular.module('andes.controllers', [])
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
-            $ionicHistory.goBack();
+
           });
 
         }
@@ -347,7 +346,7 @@ angular.module('andes.controllers', [])
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
-            $ionicHistory.goBack();
+
           });
           /*
           $rootScope.hideload();
@@ -432,7 +431,7 @@ angular.module('andes.controllers', [])
         $rootScope.hideload();
         if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
         $rootScope.err("No es accesible");
-        $ionicHistory.goBack();
+
       });
     });
   };
@@ -471,7 +470,6 @@ angular.module('andes.controllers', [])
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
-            $ionicHistory.goBack();
           });
 
         } else {
@@ -535,7 +533,7 @@ angular.module('andes.controllers', [])
     }
   });
 })
-.controller('ConteoCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
+.controller('ConteoCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup, $ionicHistory) {
 
   $scope.popCloseable = null;
   $scope.barra = '';
@@ -544,7 +542,7 @@ angular.module('andes.controllers', [])
   $scope.pareja = [];
   $scope.info = {};
   $scope.conteo = 0;
-  $scope.custom_qty = 1;
+  $scope.custom_c = 1;
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
     if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
@@ -576,9 +574,9 @@ angular.module('andes.controllers', [])
     $scope.info = {};
   }
   $scope.borrar = function (IdArticulo) {
-    $rootScope.confirmar('Desea limpiar la ubicación del articulo '+IdArticulo+'?', function() {
+    $rootScope.confirmar('Desea reiniciar el conteo de '+IdArticulo+'?', function() {
       $rootScope.showload();
-      jQuery.post(app.rest+"/mayor.php?op=borrarUbicacion", { 
+      jQuery.post(app.rest+"/conteo.php?op=rebootConteo", { 
         barra: $scope.barra, 
         borrar: IdArticulo, 
       }, function(data) {
@@ -602,7 +600,6 @@ angular.module('andes.controllers', [])
         $rootScope.hideload();
         if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
         $rootScope.err("No es accesible");
-        $ionicHistory.goBack();
       });
     });
   };
@@ -630,22 +627,40 @@ angular.module('andes.controllers', [])
             }
             else {
               if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-              if (data.data.InfoUbicacion[0].CantidadConteo == 0) {
-                $scope.conteo = 1;
+              //if (data.data.InfoUbicacion[0].CantidadConteo == 0) {
+              //  $scope.conteo = 1;
+              //}
+              $scope.conteo = data.data.InfoUbicacion[0].NroConteo;
+              if ($scope.conteo == 3 && data.data.InfoUbicacion[0].IDEstadoConteo == 1) {
+                $scope.conteo = 0;
+                if (window.cordova) { navigator.notification.beep(1); }
+                $rootScope.err("Conteo de la ubicación está finalizado. No puede contar esta ubicación");
               }
+              else {
+                $scope.barra = args.data.data;
+                $scope.enableOp = true;
+                $scope.info = data.data;
+                $scope.modoEscaner = 'agregar';
+                //$scope.pareja = data.pareja;
 
-              $scope.barra = args.data.data;
-              $scope.enableOp = true;
-              $scope.info = data.data;
-              $scope.modoEscaner = 'agregar';
-              //$scope.pareja = data.pareja;
-              
+                $scope.pareja = [];
+                for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
+                  if ($scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo] > 0) {
+                    $scope.pareja.push({
+                      Descripcion: $scope.info.ConteoInventario[i].Nombre,
+                      IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
+                      Bulto: $scope.info.ConteoInventario[i].UnidadxBulto,
+                      Cantidad: $scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo]
+                    });
+                  }
+                }
+                $scope.$broadcast('scroll.resize');
+              }
             }
           },"json").fail(function() {
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             $rootScope.err("Error de servidor");
-            $ionicHistory.goBack();
           });
 
         } else {
@@ -657,9 +672,10 @@ angular.module('andes.controllers', [])
       else if ($scope.modoEscaner == 'agregar') {
         if (args.data.data.length == 18) {
           $rootScope.showload();
-          jQuery.post(app.rest+"/mayor.php?op=agregarConteo", { 
+          jQuery.post(app.rest+"/conteo.php?op=agregarConteo", { 
             ubica: $scope.barra,
-            barra: args.data.data
+            barra: args.data.data,
+            conteo: $rootScope.custom_qty
           }, function(data) {
             $rootScope.hideload();
             /*if (data.res == "PROMPT") {
@@ -692,7 +708,21 @@ angular.module('andes.controllers', [])
             }
             else {
               if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-              $scope.pareja = data.pareja;
+              $scope.info = data.data;
+              $scope.pareja = [];
+              for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
+
+                if ($scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo] > 0) {
+                  $scope.pareja.push({
+                    Descripcion: $scope.info.ConteoInventario[i].Nombre,
+                    IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
+                    Bulto: $scope.info.ConteoInventario[i].UnidadxBulto,
+                    Cantidad: $scope.info.ConteoInventario[i]['CantidadConteo'+$scope.conteo]
+                  });
+                }
+                $scope.$broadcast('scroll.resize')
+              }
+              
             }
           },"json").fail(function() {
             $rootScope.hideload();
@@ -705,12 +735,53 @@ angular.module('andes.controllers', [])
           $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
         }
       }
-
-
     }
   });
-})
 
+  $scope.finishConteo = function() {
+    if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
+    $rootScope.confirmar("Finalizar conteo?", function() {
+      $rootScope.showload();
+      jQuery.post(app.rest+"/conteo.php?op=finalizar", { 
+        ubica: $scope.barra,
+      }, function(data2) {
+        $rootScope.hideload();
+        if (data2.res == "OK") {
+          $rootScope.ok("Conteo finalizado");       
+          $ionicHistory.nextViewOptions({
+              historyRoot: true
+          });
+          $state.go('main.selector');
+        }
+        else {
+          $rootScope.err(data2.msg);
+        }
+        if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+      },"json").fail(function() {
+        $rootScope.hideload();
+        if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+        $rootScope.err("Error de servidor");
+      });
+
+    }, function() {
+      if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+    });
+  }
+  $scope.cancelarConteo = function() {
+    if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
+    $rootScope.confirmar("Continuar despues?", function() {
+        
+      $ionicHistory.nextViewOptions({
+          historyRoot: true
+      });
+      $state.go('main.selector');
+
+      if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+    }, function() {
+      if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+    });
+  }
+})
 .controller('MainCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicSideMenuDelegate, $ionicHistory) {
 
   $ionicSideMenuDelegate.canDragContent(false);

@@ -87,7 +87,9 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
      alertPopup.then(function(res) {
       $("body").removeClass("modal-open");
       alertPopup.close();
-      callback();
+      if (callback) { 
+        callback();
+      }
      });
 
      if (callback) {
@@ -298,7 +300,7 @@ function fakeScan666() {
 function ubicacion() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
-  $rootScope.$broadcast("scanner", { data: {success: true, data: "NOR1000501" } });
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "NOR4000108" } });
   $rootScope.$apply();
 }
 
