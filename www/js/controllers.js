@@ -594,7 +594,10 @@ angular.module('andes.controllers', [])
           $scope.pareja = [];
           for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
             //console.log('idarticulo: '+  $scope.info.ConteoInventario[i].IDArticulo + ' uni - '+$scope.info.ConteoInventario[i].UnidadxBulto+' - estado: '+$scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo]+" - conteo: "+$scope.conteo);
-            if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0) {
+            if (
+              $scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0 && 
+              $scope.info.ConteoInventario[i]['CantidadConteo1'] > 0 && $scope.info.ConteoInventario[i]['CantidadConteo2'] > 0  
+             ) {
               //console.log('IN OK');
               $scope.pareja.push({
                 Descripcion: $scope.info.ConteoInventario[i].Nombre,
@@ -664,7 +667,8 @@ angular.module('andes.controllers', [])
                 $scope.pareja = [];
                 for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
                   //console.log('idarticulo: '+  $scope.info.ConteoInventario[i].IDArticulo + ' uni - '+$scope.info.ConteoInventario[i].UnidadxBulto+' - estado: '+$scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo]+" - conteo: "+$scope.conteo);
-                  if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0) {
+                  if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0 && 
+                    $scope.info.ConteoInventario[i]['CantidadConteo1'] > 0 && $scope.info.ConteoInventario[i]['CantidadConteo2'] > 0 ) {
                     //console.log('IN OK');
                     $scope.pareja.push({
                       Descripcion: $scope.info.ConteoInventario[i].Nombre,
@@ -718,7 +722,8 @@ angular.module('andes.controllers', [])
               $scope.pareja = [];
               for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
                 //console.log('idarticulo: '+  $scope.info.ConteoInventario[i].IDArticulo + ' uni - '+$scope.info.ConteoInventario[i].UnidadxBulto+' - estado: '+$scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo]+" - conteo: "+$scope.conteo);
-                if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0) {
+                if ($scope.conteo == 3 && $scope.info.ConteoInventario[i]['IDEstadoConteo'+$scope.conteo] == 0 && 
+                  $scope.info.ConteoInventario[i]['CantidadConteo1'] > 0 && $scope.info.ConteoInventario[i]['CantidadConteo2'] > 0 ) {
                   //console.log('IN OK');
                   $scope.pareja.push({
                     Descripcion: $scope.info.ConteoInventario[i].Nombre,
