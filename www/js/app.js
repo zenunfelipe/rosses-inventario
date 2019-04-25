@@ -300,7 +300,7 @@ function fakeScan666() {
 function ubicacion() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
-  $rootScope.$broadcast("scanner", { data: {success: true, data: "NOR4000108" } });
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "SUR5000103" } });
   $rootScope.$apply();
 }
 
