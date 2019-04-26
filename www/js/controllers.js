@@ -544,6 +544,8 @@ angular.module('andes.controllers', [])
   $scope.conteo = 0;
   $scope.custom_c = 1;
 
+  $scope.grupo = localStorage.getItem('ocip');
+
   $scope.$on('$ionicView.enter', function(obj, viewData){
     if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
     if (viewData.direction == 'back') {
@@ -580,6 +582,7 @@ angular.module('andes.controllers', [])
         ubica: $scope.barra, 
         barra: IdArticulo, 
         bulto: bulto,
+        grupo: $scope.grupo
       }, function(data) {
         $rootScope.hideload();
         if (data.res == "ERR") {
@@ -637,7 +640,8 @@ angular.module('andes.controllers', [])
         if (args.data.data.length == 10) {
           $rootScope.showload();
           jQuery.post(app.rest+"/conteo.php?op=consultarUbicacion", { 
-            barra: args.data.data
+            barra: args.data.data,
+            grupo: $scope.grupo
           }, function(data) {
             $rootScope.hideload();
             if (data.res == "ERR") {
@@ -708,7 +712,8 @@ angular.module('andes.controllers', [])
           jQuery.post(app.rest+"/conteo.php?op=agregarConteo", { 
             ubica: $scope.barra,
             barra: args.data.data,
-            conteo: $rootScope.custom_qty
+            conteo: $rootScope.custom_qty,
+            grupo: $scope.grupo
           }, function(data) {
             $rootScope.hideload();
             if (data.res == "ERR") {
@@ -766,6 +771,7 @@ angular.module('andes.controllers', [])
       $rootScope.showload();
       jQuery.post(app.rest+"/conteo.php?op=finalizar", { 
         ubica: $scope.barra,
+        grupo: $scope.grupo
       }, function(data2) {
         $rootScope.hideload();
         if (data2.res == "OK") {
@@ -818,6 +824,29 @@ angular.module('andes.controllers', [])
   }
 })
 .controller('SelectorCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicHistory) {
+
+  $scope.modalConfiguracion = null;
+
+  $ionicModal.fromTemplateUrl('templates/config.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalConfiguracion = modal;
+  });
+
+  $scope.start = function(x) {
+    if (localStorage.getItem('ocip') == null) {
+      setTimeout(function() { 
+        $scope.modalConfiguracion.show();
+      },500);
+    } 
+  }
+
+  $scope.start();
+
+  $scope.setGrupo = function(i) {
+    localStorage.setItem('ocip', 'grupo'+i);
+  }
 
   $scope.BVN = function() {
     $ionicHistory.nextViewOptions({
