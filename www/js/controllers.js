@@ -843,9 +843,18 @@ angular.module('andes.controllers', [])
   }
 
   $scope.start();
+  $scope.selg = "";
 
   $scope.setGrupo = function(i) {
-    localStorage.setItem('ocip', 'grupo'+i);
+    $scope.selg = "grupo"+i;
+  }
+  $scope.confirmGrupo = function() {
+    $rootScope.confirmar('¿Seguro?', function() {
+      localStorage.setItem('ocip', $scope.selg);
+      $scope.modalConfiguracion.hide();
+      $scope.start();
+    });
+    
   }
 
   $scope.BVN = function() {
