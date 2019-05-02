@@ -212,6 +212,15 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
       }
     }
   })
+  .state('main.stock', {
+    url: '/stock',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/stock.html',
+        controller: 'StockCtrl'
+      }
+    }
+  })
 
   //$urlRouterProvider.otherwise('/main/home');
 })
@@ -279,7 +288,7 @@ document.addEventListener("online", function() {
 function codigo() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
-  $rootScope.$broadcast("scanner", { data: {success: true, data: "I00000000000200100" } });
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "I00000001776200100" } });
   $rootScope.$apply();
 }
 /*
