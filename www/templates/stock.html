@@ -1,0 +1,44 @@
+<ion-view view-title="CONSULTA STOCK">
+  <ion-content scroll="false" class="home" on-swipe-right="onSwipeRight($event)" on-swipe-left="onSwipeLeft($event)">
+    <div ng-if="!enableOp">
+      <br><br><br>
+      <center>
+        <h3>Escanee un código de artículo</h3>
+      </center>
+    </div>
+
+    <div ng-hide="!enableOp">
+      <div style="background-color: #003366; text-align:center;"><h3 style="color:#FFF; padding: 10px;">{{info.InfoBPMArticulo[0].IDArticulo}}<br />{{info.InfoBPMArticulo[0].Nombre}}</h3></div>
+        <ion-scroll direction="y" style="height: calc(100vh - 250px)">
+        <div class="" style="display:block; margin-right: 20px; font-size: 25px; margin-bottom: 25px;" ng-repeat="linea in pareja">
+          <div class="row">
+            <div class="col-15 conteo-bulto">
+              {{linea.Bulto}}
+              <span>und. x bulto</span>
+            </div>
+            <div class="col-15 conteo-bulto">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="col-15 conteo-qty">
+              {{linea.Cantidad}}
+              <span>bultos</span>
+            </div>
+          </div>
+          
+        </div> 
+      </ion-scroll>
+    </div>
+
+  </ion-content>
+  <ion-footer-bar class="bar-stable">
+    <div class="row">
+      <div class="col col-100 text-center" ng-if="conteo == 0">
+        <strong>SALIR?</strong>
+      </div>
+      <div class="col col-100 text-center" style="margin-top: -10px;">
+        <button class="button button-dark" ng-click="cancelarConteo()">SALIR</button>
+      </div>
+    </div>
+    
+  </ion-footer-bar>
+</ion-view>
