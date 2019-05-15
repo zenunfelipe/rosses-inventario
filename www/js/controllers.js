@@ -659,7 +659,7 @@ angular.module('andes.controllers', [])
       }
 
       else if ($scope.modoEscaner == 'agregar') {
-        if (args.data.data.length == 14) {
+        if (args.data.data.length >= 12 && args.data.data.length <= 15 ) {
           $rootScope.showload();
           jQuery.post(app.rest+"/index.php?action=agrega", { 
             ubica: $scope.barra,
