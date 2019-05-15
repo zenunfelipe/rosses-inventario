@@ -533,6 +533,190 @@ angular.module('andes.controllers', [])
     }
   });
 })
+.controller('BvnUbicacionCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
+
+  $scope.popCloseable = null;
+  $scope.barra = '';
+  $scope.modoEscaner = 'leer';
+  $scope.enableOp = false;
+  $scope.pareja = [];
+  $scope.pasillo = "";
+  $scope.lado = "";
+  $scope.fila = "";
+  $scope.columna = "";
+
+  $scope.$on('$ionicView.enter', function(obj, viewData){
+    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+    if (viewData.direction == 'back') {
+      $scope.popCloseable = null;
+      $scope.barra = '';
+      $scope.modoEscaner = 'leer';
+      $scope.enableOp = false;
+      $scope.pareja = [];
+    }
+  });
+
+  $scope.$on('$ionicView.beforeLeave', function(obj, viewData){
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+  }); 
+
+  $scope.cancelar = function() {
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+    /*
+    $ionicHistory.nextViewOptions({
+        historyRoot: true
+    });
+    $state.go('main.selector');
+    */
+  }
+  $scope.borrar = function (IdArticulo) {
+    $rootScope.confirmar('Desea limpiar la ubicación del articulo '+IdArticulo+'?', function() {
+      $rootScope.showload();
+      jQuery.post(app.rest+"/index.php?action=borrar", { 
+        pasillo: $scope.pasillo,
+        lado: $scope.lado,
+        columna: $scope.columna,
+        fila: $scope.fila,
+        codigo: IdArticulo, 
+      }, function(data) {
+        $rootScope.hideload();
+        if (data.res == "ERR") {
+          if (window.cordova) { navigator.notification.beep(1); }
+          $rootScope.err(data.msg, function() {
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          });
+        }
+        else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $scope.pareja = data.data;
+        }
+      },"json").fail(function() {
+        $rootScope.hideload();
+        if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+        $rootScope.err("No es accesible");
+
+      });
+    });
+  };
+  
+
+
+  $scope.$on('scanner', function(event, args) {
+    
+    if (args.hasOwnProperty("data") && args.data.success == true) {
+
+      if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
+
+      if ($scope.modoEscaner == 'leer') {
+        if (args.data.data.length == 7) {
+          $scope.pasillo = args.data.data.substring(0,2);
+          $scope.lado = args.data.data.substring(2,3);
+          $scope.fila = args.data.data.substring(3,5)
+          $scope.columna = args.data.data.substring(5,7);
+
+          $rootScope.showload();
+          jQuery.post(app.rest+"/index.php?action=buscar", { 
+            barra: args.data.data,
+            pasillo: $scope.pasillo,
+            lado: $scope.lado,
+            columna: $scope.columna,
+            fila: $scope.fila
+          }, function(data) {
+            $rootScope.hideload();
+            if (data.res == "ERR") {
+
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.err(data.msg, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              $scope.barra = args.data.data;
+              $scope.enableOp = true;
+              $scope.modoEscaner = 'agregar';
+              $scope.pareja = data.data;
+              
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+          });
+
+        } else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $scope.err("CODIGO DE UBICACION INVALIDO EN BODEGA VENTAS");
+        }
+      }
+
+      else if ($scope.modoEscaner == 'agregar') {
+        if (args.data.data.length == 14) {
+          $rootScope.showload();
+          jQuery.post(app.rest+"/index.php?action=agrega", { 
+            ubica: $scope.barra,
+            codigo: args.data.data,
+            pasillo: $scope.pasillo,
+            lado: $scope.lado,
+            columna: $scope.columna, 
+            fila: $scope.fila
+          }, function(data) {
+            $rootScope.hideload();
+            if (data.res == "PROMPT") {
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.confirmar(data.msg, function() {
+                $rootScope.showload();
+                jQuery.post(app.rest+"/index.php?action=reubicarValidando", { 
+                  ubica: $scope.barra,
+                  barra: args.data.data,
+                  secure: '1'
+                }, function(data2) {
+                  $rootScope.hideload();
+                  $scope.pareja = data2.pareja;
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                },"json").fail(function() {
+                  $rootScope.hideload();
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                  $rootScope.err("Error de servidor");
+                });
+
+              }, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else if (data.res == "ERR") {
+              $rootScope.err(data.msg, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              $scope.pareja = data.data;
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+          });
+        }
+        else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
+        }
+      }
+
+
+    }
+  });
+})
 .controller('ConteoCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup, $ionicHistory) {
 
   $scope.popCloseable = null;
@@ -987,6 +1171,13 @@ angular.module('andes.controllers', [])
         historyRoot: true
     });
     $state.go('main.bpmubicacion');
+  }
+
+  $scope.BVNUbicacion = function() {
+    $ionicHistory.nextViewOptions({
+        historyRoot: true
+    });
+    $state.go('main.bvnubicacion');
   }
 
   $scope.STOCK = function() {

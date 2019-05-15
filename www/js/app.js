@@ -194,6 +194,15 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
       }
     }
   })
+  .state('main.bvnubicacion', {
+    url: '/bvnubicacion',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/bvnubicacion.html',
+        controller: 'BvnUbicacionCtrl'
+      }
+    }
+  })
   .state('main.selector', {
     url: '/selector',
     views: {
@@ -289,6 +298,18 @@ function codigo() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
   $rootScope.$broadcast("scanner", { data: {success: true, data: "I00000001776200100" } });
+  $rootScope.$apply();
+}
+function bvn() {
+  var $body = angular.element(document.body);            // 1
+  var $rootScope = $body.injector().get('$rootScope');   // 2b
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "I0000000S56062" } });
+  $rootScope.$apply();
+}
+function ubvn() {
+  var $body = angular.element(document.body);            // 1
+  var $rootScope = $body.injector().get('$rootScope');   // 2b
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "09A0201" } });
   $rootScope.$apply();
 }
 /*
