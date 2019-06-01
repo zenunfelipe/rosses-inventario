@@ -12,6 +12,17 @@ LOGIN
 	background-image: url(../img/global.jpg);
 	background-size: cover;
 }
+.pass-custom-popup .popup {
+	opacity: 1;
+	background-color: #FFF;
+}
+.pass-custom-popup .popup-sub-title {
+	font-size: 13px;
+}
+.pass-custom-popup .popup-body input {
+	border:1px solid #999;
+	text-align: center;
+}
 
 .login .logo {
 	padding-top: 80px;
@@ -264,6 +275,9 @@ ion-content.pedido {
 
 .linea-cantidad.ended { color: red; }
 .linea-cantidadpicking.ended { color: red; }
+.homes .button-picking {
+	padding: 0 4px !important;
+}
 .item-linea .button-picking {
 	padding: 0 5px;
 	min-width: 40px;

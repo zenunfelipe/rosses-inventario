@@ -1,8 +1,7 @@
 //
 angular.module('andes.controllers', [])
-
 .controller('BpmCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
-
+  $rootScope.enInicio = 0;
   $scope.popCloseable = null;
   $scope.barra = '';
   $scope.modoEscaner = 'leer';
@@ -201,7 +200,7 @@ angular.module('andes.controllers', [])
   });
 })
 .controller('BvnCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
-
+  $rootScope.enInicio = 0;
   $scope.popCloseable = null;
   $scope.barra = '';
   $scope.modoEscaner = 'leer';
@@ -367,7 +366,7 @@ angular.module('andes.controllers', [])
   });
 })
 .controller('BpmUbicacionCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
-
+  $rootScope.enInicio = 0;
   $scope.popCloseable = null;
   $scope.barra = '';
   $scope.modoEscaner = 'leer';
@@ -534,7 +533,7 @@ angular.module('andes.controllers', [])
   });
 })
 .controller('BvnUbicacionCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
-
+  $rootScope.enInicio = 0;
   $scope.popCloseable = null;
   $scope.barra = '';
   $scope.modoEscaner = 'leer';
@@ -717,8 +716,203 @@ angular.module('andes.controllers', [])
     }
   });
 })
-.controller('ConteoCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup, $ionicHistory) {
+.controller('BsrUbicacionCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup) {
+  $rootScope.enInicio = 0;
+  $scope.popCloseable = null;
+  $scope.barra = '';
+  $scope.modoEscaner = 'leer';
+  $scope.enableOp = false;
+  $scope.pareja = [];
+  $scope.pasillo = "";
+  $scope.lado = "";
+  $scope.fila = "";
+  $scope.columna = "";
 
+  $scope.$on('$ionicView.enter', function(obj, viewData){
+    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+    if (viewData.direction == 'back') {
+      $scope.popCloseable = null;
+      $scope.barra = '';
+      $scope.modoEscaner = 'leer';
+      $scope.enableOp = false;
+      $scope.pareja = [];
+    }
+  });
+
+  $scope.$on('$ionicView.beforeLeave', function(obj, viewData){
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+  }); 
+
+  $scope.cancelar = function() {
+    $scope.popCloseable = null;
+    $scope.barra = '';
+    $scope.modoEscaner = 'leer';
+    $scope.enableOp = false;
+    $scope.pareja = [];
+    /*
+    $ionicHistory.nextViewOptions({
+        historyRoot: true
+    });
+    $state.go('main.selector');
+    */
+  }
+  $scope.borrar = function (IdArticulo) {
+    $rootScope.confirmar('Desea limpiar la ubicación del articulo '+IdArticulo+'?', function() {
+      $rootScope.showload();
+      jQuery.post(app.rest+"/bsr.php?action=borrar", { 
+        pasillo: $scope.pasillo,
+        lado: $scope.lado,
+        columna: $scope.columna,
+        fila: $scope.fila,
+        codigo: IdArticulo, 
+      }, function(data) {
+        $rootScope.hideload();
+        if (data.res == "ERR") {
+          if (window.cordova) { navigator.notification.beep(1); }
+          $rootScope.err(data.msg, function() {
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          });
+        }
+        else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $scope.pareja = data.data;
+        }
+      },"json").fail(function() {
+        $rootScope.hideload();
+        if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+        $rootScope.err("No es accesible");
+
+      });
+    });
+  };
+  
+
+
+  $scope.$on('scanner', function(event, args) {
+    
+    if (args.hasOwnProperty("data") && args.data.success == true) {
+
+      if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
+
+      if ($scope.modoEscaner == 'leer') {
+        if (args.data.data.length == 7) {
+          $scope.pasillo = args.data.data.substring(0,2);
+          $scope.lado = args.data.data.substring(2,3);
+          $scope.fila = args.data.data.substring(3,5)
+          $scope.columna = args.data.data.substring(5,7);
+
+          $rootScope.showload();
+          jQuery.post(app.rest+"/bsr.php?action=buscar", { 
+            barra: args.data.data,
+            pasillo: $scope.pasillo,
+            lado: $scope.lado,
+            columna: $scope.columna,
+            fila: $scope.fila
+          }, function(data) {
+            $rootScope.hideload();
+            if (data.res == "ERR") {
+
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.err(data.msg, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              $scope.barra = args.data.data;
+              $scope.enableOp = true;
+              $scope.modoEscaner = 'agregar';
+              $scope.pareja = data.data;
+              
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+          });
+
+        } else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $scope.err("CODIGO DE UBICACION INVALIDO EN BODEGA VENTAS");
+        }
+      }
+
+      else if ($scope.modoEscaner == 'agregar') {
+        if (args.data.data.length >= 12 && args.data.data.length <= 15 ) {
+          $rootScope.showload();
+          jQuery.post(app.rest+"/bsr.php?action=agrega", { 
+            ubica: $scope.barra,
+            codigo: args.data.data,
+            pasillo: $scope.pasillo,
+            lado: $scope.lado,
+            columna: $scope.columna, 
+            fila: $scope.fila
+          }, function(data) {
+            $rootScope.hideload();
+            if (data.res == "PROMPT") {
+              if (window.cordova) { navigator.notification.beep(1); }
+              $rootScope.confirmar(data.msg, function() {
+                $rootScope.showload();
+                jQuery.post(app.rest+"/bsr.php?action=reubicarValidando", { 
+                  ubica: $scope.barra,
+                  barra: args.data.data,
+                  secure: '1'
+                }, function(data2) {
+                  $rootScope.hideload();
+                  $scope.pareja = data2.pareja;
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                },"json").fail(function() {
+                  $rootScope.hideload();
+                  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                  $rootScope.err("Error de servidor");
+                });
+
+              }, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else if (data.res == "ERR") {
+              $rootScope.err(data.msg, function() {
+                if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              });
+            }
+            else {
+              if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+              $scope.pareja = data.data;
+            }
+          },"json").fail(function() {
+            $rootScope.hideload();
+            if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            $rootScope.err("Error de servidor");
+          });
+        }
+        else {
+          if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+          $rootScope.err("CODIGO INVALIDO PARA AGREGAR");
+        }
+      }
+
+
+    }
+  });
+})
+.controller('ConteoCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup, $ionicHistory, $stateParams, $ionicPlatform) {
+  $rootScope.enInicio = 0;
+  var deregisterFirst = $ionicPlatform.registerBackButtonAction(
+    function() {
+      $ionicHistory.nextViewOptions({
+          historyRoot: true
+      });
+      $state.go('main.selector');
+    }, 100
+  );
+  $scope.$on('$destroy', deregisterFirst);
+
+  $scope.warehouse = $stateParams.warehouse;
   $scope.popCloseable = null;
   $scope.barra = '';
   $scope.modoEscaner = 'leer';
@@ -996,7 +1190,7 @@ angular.module('andes.controllers', [])
   }
 })
 .controller('StockCtrl', function($scope, $state, $rootScope, $localStorage, $location, $timeout, $ionicLoading, $ionicPopup, $ionicHistory) {
-
+  $rootScope.enInicio = 0;
   $scope.popCloseable = null;
   $scope.barra = '';
   $scope.modoEscaner = 'leer';
@@ -1095,7 +1289,6 @@ angular.module('andes.controllers', [])
       }
     }
   });
- 
 })
 .controller('MainCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicSideMenuDelegate, $ionicHistory) {
 
@@ -1107,12 +1300,17 @@ angular.module('andes.controllers', [])
     });
     $state.go('main.selector');
     $ionicSideMenuDelegate.toggleLeft();
+  };
+
+  $scope.cambiarGrupo = function() {
+    $ionicSideMenuDelegate.toggleLeft();
+    $rootScope.$broadcast('cambiarGrupoBroadcast', null);
   }
 })
-.controller('SelectorCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicModal, $rootScope, $location, $ionicLoading, $ionicHistory) {
+.controller('SelectorCtrl', function($scope, $state, $localStorage, $timeout, $interval, $ionicPopup, $ionicModal, $rootScope, $location, $ionicLoading, $ionicHistory) {
 
   $scope.modalConfiguracion = null;
-
+  $rootScope.enInicio = 1;
   $ionicModal.fromTemplateUrl('templates/config.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -1144,7 +1342,42 @@ angular.module('andes.controllers', [])
     });
     
   }
+  $scope.data = { password: "" };
 
+  $scope.$on('cambiarGrupoBroadcast', function(event, message) {
+    var myPopup = $ionicPopup.show({
+      template: '<input type="password" ng-model="data.password" placeholder="ingresa la clave">',
+      cssClass: 'pass-custom-popup',
+      title: 'Que usaba Linus',
+      subTitle: 'de la serie Darvin del 101',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancelar' },
+        {
+          text: '<b>Aceptar</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data.password) {
+              $rootScope.err("No autorizado");
+            } else {
+              return $scope.data.password;
+            }
+          }
+        }
+      ]
+    });
+
+    myPopup.then(function(res) {
+      console.log('Tapped!', res);
+      if (res == "pañito") {
+        localStorage.removeItem('ocip');
+        $scope.start();
+      }
+      else {
+        $rootScope.err("No autorizado");
+      }
+    });
+  });
   $scope.BVN = function() {
     $ionicHistory.nextViewOptions({
         historyRoot: true
@@ -1159,11 +1392,11 @@ angular.module('andes.controllers', [])
     $state.go('main.bpm');
   }
 
-  $scope.CONTEO = function() {
+  $scope.CONTEO = function(warehouse) {
     $ionicHistory.nextViewOptions({
         historyRoot: true
     });
-    $state.go('main.conteo');
+    $state.go('main.conteo', { warehouse: warehouse });
   }
 
   $scope.BPMUbicacion = function() {
@@ -1178,6 +1411,12 @@ angular.module('andes.controllers', [])
         historyRoot: true
     });
     $state.go('main.bvnubicacion');
+  }
+  $scope.BSRUbicacion = function() {
+    $ionicHistory.nextViewOptions({
+        historyRoot: true
+    });
+    $state.go('main.bsrubicacion');
   }
 
   $scope.STOCK = function() {

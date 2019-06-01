@@ -203,6 +203,15 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
       }
     }
   })
+  .state('main.bsrubicacion', {
+    url: '/bsrubicacion',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/bsrubicacion.html',
+        controller: 'BsrUbicacionCtrl'
+      }
+    }
+  })
   .state('main.selector', {
     url: '/selector',
     views: {
@@ -219,6 +228,9 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
         templateUrl: 'templates/conteo.html',
         controller: 'ConteoCtrl'
       }
+    },
+    params: {
+      warehouse: ''
     }
   })
   .state('main.stock', {

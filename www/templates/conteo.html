@@ -1,4 +1,4 @@
-<ion-view view-title="CONTEO DE INVENTARIO">
+<ion-view view-title="CONTEO INVENTARIO - {{warehouse}}">
   <ion-content scroll="false" class="home" on-swipe-right="onSwipeRight($event)" on-swipe-left="onSwipeLeft($event)">
     <div ng-if="!enableOp">
       <br><br><br>
@@ -18,7 +18,8 @@
       <hr />
       <ion-scroll direction="y" style="height: calc(100vh - 250px)">
          
-        <h5 style='color:red; text-align:center;' ng-if="pareja.length == 0">NO HAY PRODUCTOS<br />EN EL CONTEO ACTUAL<br /><br />Empieza a leer bultos o productos</h5>
+        <h5 style='color:red; text-align:center;' ng-if="pareja.length == 0 && warehouse == 'BPM'">NO HAY PRODUCTOS<br />EN EL CONTEO ACTUAL<br /><br />Empieza a leer bultos o productos</h5>
+        <h5 style='color:red; text-align:center;' ng-if="pareja.length == 0 && warehouse != 'BPM'">NO HAY PRODUCTOS<br />EN EL CONTEO ACTUAL<br /><br />Empieza a leer productos</h5>
         <div class="" style="display:inline-block; margin-right: 20px; font-size: 25px; margin-bottom: 25px;" ng-repeat="linea in pareja">
           <div class="row">
             <div class="col-67 conteo-articulo">
@@ -26,12 +27,12 @@
             </div>
             <div class="col-15 conteo-bulto">
               {{(linea.Bulto == 0 && linea.Cantidad == 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' : linea.Bulto)}}
-              <span ng-if="(linea.Bulto > 0 && linea.Cantidad > 0) || conteo == 3">und. x bulto</span>
+              <span ng-if="((linea.Bulto > 0 && linea.Cantidad > 0) || conteo == 3) && warehouse == 'BPM'">und. x bulto</span>
 
             </div>
             <div class="col-15 conteo-qty">
               {{linea.Cantidad}}
-              <span ng-if="linea.Cantidad > 0 || conteo == 3">bultos</span>
+              <span ng-if="(linea.Cantidad > 0 || conteo == 3) && warehouse == 'BPM'">bultos</span>
             </div>
           </div>
           

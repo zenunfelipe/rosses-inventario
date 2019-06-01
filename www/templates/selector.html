@@ -1,21 +1,25 @@
 <ion-view view-title="SELECCIONA BODEGA Y TIPO LECTURA">
   <ion-content class="home" on-swipe-right="onSwipeRight($event)" on-swipe-left="onSwipeLeft($event)">
 
-    <div class="text-center">
+    <div class="text-center homes">
     <br /><br />
     <h3>BODEGA VENTAS</h3>
     <button class="button button-picking button-assertive icon ion-pricetag" ng-click="BVN()"> EMPAREJADO</button>
     <button class="button button-picking button-positive icon ion-android-locate" ng-click="BVNUbicacion()"> UBICACION</button>
+    <button class="button button-picking button-balanced icon ion-pricetag" ng-click="CONTEO('BVN')">CONTEO</button>
     <br /><br />
     <h3>BODEGA MAYOR</h3>
     <button class="button button-picking button-royal icon ion-pricetag" ng-click="BPM()"> PRODUCTO</button>
     <button class="button button-picking button-positive icon ion-android-locate" ng-click="BPMUbicacion()"> UBICACION</button>
+    <button class="button button-picking button-balanced icon ion-pricetag" ng-click="CONTEO('BPM')">CONTEO</button>
     <br /><br />
-
-    <h3>INVENTARIO</h3>
-    <button class="button button-picking button-balanced icon ion-pricetag" ng-click="CONTEO()"> CONTEO</button>
+    <h3>BODEGA SHOWROOM</h3>
+    <!--
+    <button class="button button-picking button-royal icon ion-pricetag" ng-click="BPM()"> PRODUCTO</button>
+    -->
+    <button class="button button-picking button-positive icon ion-android-locate" ng-click="BSRUbicacion()"> UBICACION</button>
+    <button class="button button-picking button-balanced icon ion-pricetag" ng-click="CONTEO('BSR')">CONTEO</button>
     <br /><br />
-
     <h3>STOCK</h3>
     <button class="button button-picking button-calm icon ion-briefcase" ng-click="STOCK()"> STOCK</button>
     <br /><br />
