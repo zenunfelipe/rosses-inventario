@@ -1015,7 +1015,7 @@ angular.module('andes.controllers', [])
       if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
 
       if ($scope.modoEscaner == 'leer') {
-        if ( ($scope.warehouse == 'BPM' == args.data.data.length == 10) || ($scope.warehouse == 'BVN' == args.data.data.length == 7) || ($scope.warehouse == 'BSR' == args.data.data.length == 9) )  {
+        if ( ($scope.warehouse == 'BPM' && args.data.data.length == 10) || ($scope.warehouse == 'BVN' && args.data.data.length == 7) || ($scope.warehouse == 'BSR' && args.data.data.length == 9) )  {
           $rootScope.showload();
           jQuery.post(app.rest+"/conteo.php?op=consultarUbicacion", { 
             barra: args.data.data,

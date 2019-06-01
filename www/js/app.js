@@ -312,6 +312,7 @@ function codigo() {
   $rootScope.$broadcast("scanner", { data: {success: true, data: "I00000001776200100" } });
   $rootScope.$apply();
 }
+
 function bvn() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
