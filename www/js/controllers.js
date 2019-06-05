@@ -373,9 +373,10 @@ angular.module('andes.controllers', [])
   $scope.enableOp = false;
   $scope.pareja = [];
   $scope.info = {};
+  $scope.grupo = localStorage.getItem('ocip');
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
-    if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+  if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
     if (viewData.direction == 'back') {
       $scope.popCloseable = null;
       $scope.barra = '';
@@ -409,6 +410,7 @@ angular.module('andes.controllers', [])
       jQuery.post(app.rest+"/mayor.php?op=borrarUbicacion", { 
         barra: $scope.barra, 
         borrar: IdArticulo, 
+        grupo: $scope.grupo
       }, function(data) {
         $rootScope.hideload();
         if (data.res == "ERR") {
@@ -447,7 +449,8 @@ angular.module('andes.controllers', [])
         if (args.data.data.length == 10) {
           $rootScope.showload();
           jQuery.post(app.rest+"/mayor.php?op=consultarUbicacion", { 
-            barra: args.data.data
+            barra: args.data.data,
+            grupo: $scope.grupo
           }, function(data) {
             $rootScope.hideload();
             if (data.res == "ERR") {
@@ -482,7 +485,8 @@ angular.module('andes.controllers', [])
           $rootScope.showload();
           jQuery.post(app.rest+"/mayor.php?op=reubicarValidando", { 
             ubica: $scope.barra,
-            barra: args.data.data
+            barra: args.data.data,
+            grupo: $scope.grupo
           }, function(data) {
             $rootScope.hideload();
             if (data.res == "PROMPT") {
@@ -492,7 +496,8 @@ angular.module('andes.controllers', [])
                 jQuery.post(app.rest+"/mayor.php?op=reubicarValidando", { 
                   ubica: $scope.barra,
                   barra: args.data.data,
-                  secure: '1'
+                  secure: '1',
+                  grupo: $scope.grupo
                 }, function(data2) {
                   $rootScope.hideload();
                   $scope.pareja = data2.pareja;
@@ -539,10 +544,8 @@ angular.module('andes.controllers', [])
   $scope.modoEscaner = 'leer';
   $scope.enableOp = false;
   $scope.pareja = [];
-  $scope.pasillo = "";
-  $scope.lado = "";
-  $scope.fila = "";
-  $scope.columna = "";
+  $scope.info = {};
+  $scope.grupo = localStorage.getItem('ocip');
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
     if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
@@ -552,6 +555,7 @@ angular.module('andes.controllers', [])
       $scope.modoEscaner = 'leer';
       $scope.enableOp = false;
       $scope.pareja = [];
+      $scope.info = {};
     }
   });
 
@@ -561,6 +565,7 @@ angular.module('andes.controllers', [])
     $scope.modoEscaner = 'leer';
     $scope.enableOp = false;
     $scope.pareja = [];
+    $scope.info = {};
   }); 
 
   $scope.cancelar = function() {
@@ -569,22 +574,15 @@ angular.module('andes.controllers', [])
     $scope.modoEscaner = 'leer';
     $scope.enableOp = false;
     $scope.pareja = [];
-    /*
-    $ionicHistory.nextViewOptions({
-        historyRoot: true
-    });
-    $state.go('main.selector');
-    */
+    $scope.info = {};
   }
   $scope.borrar = function (IdArticulo) {
     $rootScope.confirmar('Desea limpiar la ubicación del articulo '+IdArticulo+'?', function() {
       $rootScope.showload();
-      jQuery.post(app.rest+"/index.php?action=borrar", { 
-        pasillo: $scope.pasillo,
-        lado: $scope.lado,
-        columna: $scope.columna,
-        fila: $scope.fila,
-        codigo: IdArticulo, 
+      jQuery.post(app.rest+"/bvn.php?op=borrarUbicacion", { 
+        barra: $scope.barra, 
+        borrar: IdArticulo, 
+        grupo: $scope.grupo
       }, function(data) {
         $rootScope.hideload();
         if (data.res == "ERR") {
@@ -595,7 +593,12 @@ angular.module('andes.controllers', [])
         }
         else {
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-          $scope.pareja = data.data;
+          for (var i =0;i < $scope.pareja.length; i++) {
+            if ($scope.pareja[i].IDArticulo == IdArticulo) {
+              $scope.splice(i, 1);
+              break;
+            }
+          }
         }
       },"json").fail(function() {
         $rootScope.hideload();
@@ -605,7 +608,7 @@ angular.module('andes.controllers', [])
       });
     });
   };
-  
+
 
 
   $scope.$on('scanner', function(event, args) {
@@ -616,22 +619,13 @@ angular.module('andes.controllers', [])
 
       if ($scope.modoEscaner == 'leer') {
         if (args.data.data.length == 7) {
-          $scope.pasillo = args.data.data.substring(0,2);
-          $scope.lado = args.data.data.substring(2,3);
-          $scope.fila = args.data.data.substring(3,5)
-          $scope.columna = args.data.data.substring(5,7);
-
           $rootScope.showload();
-          jQuery.post(app.rest+"/index.php?action=buscar", { 
+          jQuery.post(app.rest+"/bvn.php?op=consultarUbicacion", { 
             barra: args.data.data,
-            pasillo: $scope.pasillo,
-            lado: $scope.lado,
-            columna: $scope.columna,
-            fila: $scope.fila
+            grupo: $scope.grupo
           }, function(data) {
             $rootScope.hideload();
             if (data.res == "ERR") {
-
               if (window.cordova) { navigator.notification.beep(1); }
               $rootScope.err(data.msg, function() {
                 if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
@@ -642,7 +636,12 @@ angular.module('andes.controllers', [])
               $scope.barra = args.data.data;
               $scope.enableOp = true;
               $scope.modoEscaner = 'agregar';
-              $scope.pareja = data.data;
+              $scope.pareja = data.pareja;
+
+              $scope.pasillo = data.info.pasillo;
+              $scope.lado = data.info.lado;
+              $scope.fila = data.info.fila;
+              $scope.columna = data.info.columna;
               
             }
           },"json").fail(function() {
@@ -660,23 +659,21 @@ angular.module('andes.controllers', [])
       else if ($scope.modoEscaner == 'agregar') {
         if (args.data.data.length >= 12 && args.data.data.length <= 15 ) {
           $rootScope.showload();
-          jQuery.post(app.rest+"/index.php?action=agrega", { 
+          jQuery.post(app.rest+"/bvn.php?op=reubicarValidando", { 
             ubica: $scope.barra,
-            codigo: args.data.data,
-            pasillo: $scope.pasillo,
-            lado: $scope.lado,
-            columna: $scope.columna, 
-            fila: $scope.fila
+            barra: args.data.data,
+            grupo: $scope.grupo
           }, function(data) {
             $rootScope.hideload();
             if (data.res == "PROMPT") {
               if (window.cordova) { navigator.notification.beep(1); }
               $rootScope.confirmar(data.msg, function() {
                 $rootScope.showload();
-                jQuery.post(app.rest+"/index.php?action=reubicarValidando", { 
+                jQuery.post(app.rest+"/bvn.php?op=reubicarValidando", { 
                   ubica: $scope.barra,
                   barra: args.data.data,
-                  secure: '1'
+                  secure: '1',
+                  grupo: $scope.grupo
                 }, function(data2) {
                   $rootScope.hideload();
                   $scope.pareja = data2.pareja;
@@ -698,7 +695,7 @@ angular.module('andes.controllers', [])
             }
             else {
               if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-              $scope.pareja = data.data;
+              $scope.pareja = data.pareja;
             }
           },"json").fail(function() {
             $rootScope.hideload();

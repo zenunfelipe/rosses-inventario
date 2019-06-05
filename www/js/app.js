@@ -322,7 +322,7 @@ function bvn() {
 function ubvn() {
   var $body = angular.element(document.body);            // 1
   var $rootScope = $body.injector().get('$rootScope');   // 2b
-  $rootScope.$broadcast("scanner", { data: {success: true, data: "09A0201" } });
+  $rootScope.$broadcast("scanner", { data: {success: true, data: "04A0201" } });
   $rootScope.$apply();
 }
 /*
