@@ -1362,16 +1362,18 @@ angular.module('andes.controllers', [])
               console.log('ok', data.data);
               $scope.info = data.data;
               $scope.pareja = [];
-              for (var i = 0; i < $scope.info.InfoBPMArticulo.length; i++) {
+              for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
                //console.log('IN OK');
                 $scope.pareja.push({
-                  Descripcion: $scope.info.InfoBPMArticulo[0].Nombre,
-                  IDArticulo: $scope.info.InfoBPMArticulo[0].IDArticulo,
-                  Bulto: 1,
-                  Cantidad: $scope.info.InfoBPMArticulo[0].UnidadxBulto
+                  Descripcion: $scope.info.ConteoInventario[i].Nombre,
+                  IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
+                  Bulto: $scope.info.ConteoInventario[i].StockUnidadxBulto,
+                  Cantidad: $scope.info.ConteoInventario[i].StockUnidadxBulto
                 });
 
               }
+              console.log('-----------------------------------------------------');
+              console.log($scope.info);
               $scope.$broadcast('scroll.resize');
               
             }
