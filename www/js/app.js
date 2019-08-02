@@ -243,6 +243,16 @@ angular.module('andes', ['ionic', 'andes.controllers','ngStorage','peanuthub-cus
     }
   })
 
+  .state('main.stockbvn', {
+    url: '/stockbvn',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/stockbvn.html',
+        controller: 'StockBvnCtrl'
+      }
+    }
+  })
+
   //$urlRouterProvider.otherwise('/main/home');
 })
 .filter('price', [
