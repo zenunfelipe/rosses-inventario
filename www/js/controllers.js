@@ -1361,10 +1361,10 @@ angular.module('andes.controllers', [])
               if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
               console.log('ok', data.data);
               $scope.info = data.data;
-              $scope.pareja = [];
+              $scope.parejabvn = [];
               for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
                //console.log('IN OK');
-                $scope.pareja.push({
+                $scope.parejabvn.push({
                   Descripcion: $scope.info.InfoBPMArticulo[0].Nombre,
                   IDArticulo: $scope.info.InfoBPMArticulo[0].IDArticulo,
                   Bulto: $scope.info.InfoBPMArticulo[0].StockUnidadxBulto,

@@ -10,17 +10,17 @@
       <div ng-hide="!enableOp">
         <div style="background-color: #003366; text-align:center;"><h3 style="color:#FFF; padding: 10px;">{{info.InfoBPMArticulo[0].IDArticulo}}<br />{{info.InfoBPMArticulo[0].Nombre}}</h3></div>
           <ion-scroll direction="y" style="height: calc(100vh - 250px)">
-          <div class="" style="display:block; margin-right: 20px; font-size: 25px; margin-bottom: 25px;" ng-repeat="linea in pareja">
+          <div class="" style="display:block; margin-right: 20px; font-size: 25px; margin-bottom: 25px;">
             <div class="row">
               <div class="col-15 conteo-bulto">
-                {{linea.Bulto}}
+                {{info.InfoBPMArticulo[0].StockUnidadxBulto}}
                 <span>und. x bulto</span>
               </div>
               <div class="col-15 conteo-bulto">
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </div>
               <div class="col-15 conteo-qty">
-                {{linea.Cantidad}}
+                {{info.InfoBPMArticulo[0].StockUnidadxBulto}}
                 <span>bultos</span>
               </div>
             </div>
