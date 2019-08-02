@@ -1368,7 +1368,7 @@ angular.module('andes.controllers', [])
                   Descripcion: $scope.info.ConteoInventario[i].Nombre,
                   IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
                   Bulto: $scope.info.ConteoInventario[i].StockUnidadxBulto,
-                  // Cantidad: $scope.info.ConteoInventario[i].StockActualBodega
+                  Cantidad: $scope.info.ConteoInventario[i].StockUnidadxBulto
                 });
 
               }
