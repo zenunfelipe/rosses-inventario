@@ -1365,9 +1365,9 @@ angular.module('andes.controllers', [])
               for (var i = 0; i < $scope.info.ConteoInventario.length; i++) {
                //console.log('IN OK');
                 $scope.pareja.push({
-                  Descripcion: $scope.info.ConteoInventario[i].Nombre,
-                  IDArticulo: $scope.info.ConteoInventario[i].IDArticulo,
-                  Bulto: $scope.info.ConteoInventario[i].StockUnidadxBulto,
+                  Descripcion: $scope.info.InfoBPMArticulo[0].Nombre,
+                  IDArticulo: $scope.info.InfoBPMArticulo[0].IDArticulo,
+                  Bulto: $scope.info.InfoBPMArticulo[0].StockUnidadxBulto,
                   Cantidad: $scope.info.InfoBPMArticulo[0].StockUnidadxBulto
                 });
 
