@@ -1365,10 +1365,10 @@ angular.module('andes.controllers', [])
               for (var i = 0; i < $scope.info.InfoBPMArticulo.length; i++) {
                //console.log('IN OK');
                 $scope.pareja.push({
-                  Descripcion: $scope.info.InfoBPMArticulo[i].Nombre,
-                  IDArticulo: $scope.info.InfoBPMArticulo[i].IDArticulo,
+                  Descripcion: $scope.info.InfoBPMArticulo[0].Nombre,
+                  IDArticulo: $scope.info.InfoBPMArticulo[0].IDArticulo,
                   Bulto: 1,
-                  Cantidad: $scope.info.InfoBPMArticulo[i].UnidadxBulto
+                  Cantidad: $scope.info.InfoBPMArticulo[0].UnidadxBulto
                 });
 
               }
