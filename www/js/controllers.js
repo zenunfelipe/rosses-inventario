@@ -1373,7 +1373,7 @@ angular.module('andes.controllers', [])
 
               }
               console.log('-----------------------------------------------------');
-              console.log($scope.info);
+              console.log($scope.info.InfoBPMArticulo[0].StockUnidadxBulto);
               $scope.$broadcast('scroll.resize');
               
             }
