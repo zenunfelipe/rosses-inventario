@@ -796,7 +796,7 @@ angular.module('andes.controllers', [])
       if (window.cordova) { window.cordova.plugins.honeywell.disableTrigger(() => console.info('trigger disabled')); }
 
       if ($scope.modoEscaner == 'leer') {
-        if (args.data.data.length == 7) {
+        if (args.data.data.length == 9) {
           $scope.pasillo = args.data.data.substring(0,2);
           $scope.lado = args.data.data.substring(2,3);
           $scope.fila = args.data.data.substring(3,5)
