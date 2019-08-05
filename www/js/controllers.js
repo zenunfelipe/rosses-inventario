@@ -797,10 +797,10 @@ angular.module('andes.controllers', [])
 
       if ($scope.modoEscaner == 'leer') {
         if (args.data.data.length == 9) {
-          $scope.pasillo = args.data.data.substring(0,2);
-          $scope.lado = args.data.data.substring(2,3);
-          $scope.fila = args.data.data.substring(3,5)
-          $scope.columna = args.data.data.substring(5,7);
+          $scope.pasillo = args.data.data.substring(0,3);
+          $scope.lado = args.data.data.substring(4,2);
+          $scope.fila = args.data.data.substring(6,2)
+          $scope.columna = args.data.data.substring(7,2);
 
           $rootScope.showload();
           jQuery.post(app.rest+"/bsr.php?action=buscar", { 
@@ -834,7 +834,7 @@ angular.module('andes.controllers', [])
 
         } else {
           if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
-          $scope.err("CODIGO DE UBICACION INVALIDO EN BODEGA VENTAS");
+          $scope.err("CODIGO DE UBICACION INVALIDO EN BODEGA SHOWROOM");
         }
       }
 
