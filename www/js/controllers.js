@@ -798,9 +798,9 @@ angular.module('andes.controllers', [])
       if ($scope.modoEscaner == 'leer') {
         if (args.data.data.length == 9) {
           $scope.pasillo = args.data.data.substring(0,3);
-          $scope.lado = args.data.data.substring(3,4);
-          $scope.fila = args.data.data.substring(5,6)
-          $scope.columna = args.data.data.substring(7,8);
+          $scope.lado = args.data.data.substring(3,5);
+          $scope.fila = args.data.data.substring(5,7)
+          $scope.columna = args.data.data.substring(7,9);
 
           $rootScope.showload();
           jQuery.post(app.rest+"/bsr.php?action=buscar", { 
