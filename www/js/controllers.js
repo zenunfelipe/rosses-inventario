@@ -724,6 +724,7 @@ angular.module('andes.controllers', [])
   $scope.lado = "";
   $scope.fila = "";
   $scope.columna = "";
+  $scope.info = {};
 
   $scope.$on('$ionicView.enter', function(obj, viewData){
     if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
@@ -824,6 +825,8 @@ angular.module('andes.controllers', [])
               $scope.enableOp = true;
               $scope.modoEscaner = 'agregar';
               $scope.pareja = data.data;
+              $scope.info.pasillo = $scope.pasillo;
+              $scope.info.columna = $scope.columna;
               
             }
           },"json").fail(function() {
