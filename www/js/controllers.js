@@ -619,6 +619,7 @@ angular.module('andes.controllers', [])
 
       if ($scope.modoEscaner == 'leer') {
         if (args.data.data.length == 7) {
+          console.log('PasoLee');
           $rootScope.showload();
           jQuery.post(app.rest+"/bvn.php?op=consultarUbicacion", { 
             barra: args.data.data,
@@ -648,6 +649,7 @@ angular.module('andes.controllers', [])
           },"json").fail(function() {
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            console.log("En el leer3");
             $rootScope.err("Error de servidor");
           });
 
@@ -682,6 +684,7 @@ angular.module('andes.controllers', [])
                 },"json").fail(function() {
                   $rootScope.hideload();
                   if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+                  console.log("En el 1");
                   $rootScope.err("Error de servidor");
                 });
 
@@ -701,6 +704,7 @@ angular.module('andes.controllers', [])
           },"json").fail(function() {
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
+            console.log("En el 2");
             $rootScope.err("Error de servidor");
           });
         }
