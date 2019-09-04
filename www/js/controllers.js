@@ -624,6 +624,7 @@ angular.module('andes.controllers', [])
             barra: args.data.data,
             grupo: $scope.grupo
           }, function(data) {
+            alert('Paso');
             $rootScope.hideload();
             if (data.res == "ERR") {
               if (window.cordova) { navigator.notification.beep(1); }
