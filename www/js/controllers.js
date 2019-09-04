@@ -647,6 +647,7 @@ angular.module('andes.controllers', [])
               
             }
           },"json").fail(function() {
+            console.log(data);
             $rootScope.hideload();
             if (window.cordova) { window.cordova.plugins.honeywell.enableTrigger(() => console.info('trigger enabled')); }
             console.log("En el leer3");
